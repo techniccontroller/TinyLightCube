@@ -14,6 +14,7 @@
 #endif
 
 #include <TinyWireM.h>                  // I2C Master lib for ATTinys which use USI
+#include <math.h>
 
 // Which pin on the Attiny85 is connected to the NeoPixels?
 // On a Trinket or Gemma we suggest changing this to 1
@@ -76,7 +77,10 @@ void loop() {
   gyro_y = TinyWireM.receive()<<8 | TinyWireM.receive(); // reading registers: 0x45 (GYRO_YOUT_H) and 0x46 (GYRO_YOUT_L)
   gyro_z = TinyWireM.receive()<<8 | TinyWireM.receive(); // reading registers: 0x47 (GYRO_ZOUT_H) and 0x48 (GYRO_ZOUT_L)
 
-  uint32_t color = Wheel(abs(accelerometer_z) / 90);
+  double angle = atan(accelerometer_y*1.0/accelerometer_z) / M_PI * 180 + 90;
+  
+  //uint32_t color = Wheel(abs(accelerometer_z) / 90);
+  uint32_t color = Wheel((int) (abs(angle*1.4)));
   pixels.setPixelColor(0, color); // Moderately bright green color.
   pixels.show(); // This sends the updated pixel color to the hardware.
   
