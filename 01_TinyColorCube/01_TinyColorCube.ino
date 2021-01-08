@@ -21,7 +21,7 @@
 #define NEOPIXELPIN            4
 
 // How many NeoPixels are attached to the Arduino?
-#define NUMPIXELS      1
+#define NUMPIXELS      6
 
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
@@ -53,6 +53,7 @@ uint32_t Wheel(byte WheelPos) {
 void setup() {
 
   pixels.begin(); // This initializes the NeoPixel library.
+  pixels.setBrightness(100);
   
   TinyWireM.begin();
   TinyWireM.beginTransmission(MPU_ADDR); // Begins a transmission to the I2C slave (GY-521 board)
@@ -81,7 +82,10 @@ void loop() {
   
   //uint32_t color = Wheel(abs(accelerometer_z) / 90);
   uint32_t color = Wheel((int) (abs(angle*1.4)));
-  pixels.setPixelColor(0, color); // Moderately bright green color.
+
+  for(int i = 0; i < NUMPIXELS; i++){
+    pixels.setPixelColor(i, color); // Moderately bright green color.
+  }
   pixels.show(); // This sends the updated pixel color to the hardware.
   
   /*for(int i=0;i<255;i++){
