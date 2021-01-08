@@ -1,7 +1,7 @@
 /**
- * TinyColorCube
+ * TinyLightCube
  * 
- * created by techniccontroller 12.12.2020
+ * created by techniccontroller 08.01.2021
  * 
  * components:
  * - Attiny85
