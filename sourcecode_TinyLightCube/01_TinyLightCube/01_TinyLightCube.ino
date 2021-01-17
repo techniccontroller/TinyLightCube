@@ -18,15 +18,15 @@
 #include <TinyWireM.h>                  // I2C Master lib for ATTinys which use USI
 #include <math.h>                       // math library to use math functions
 
-#define NEOPIXELPIN 4   // pin tow with the NeoPixels are attached
-#define NUMPIXELS 6     // number of pixels attached to Attiny85
+#define NEOPIXELPIN 4       // pin to which the NeoPixels are attached
+#define NUMPIXELS 6         // number of pixels attached to Attiny85
+#define MPU_ADDR 0x68       // I2C address of the MPU-6050. If AD0 pin is set to HIGH, 
+                            // the I2C address will be 0x69.
 
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
 // example for more information on possible values.
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, NEOPIXELPIN, NEO_GRB + NEO_KHZ800);
-
-const int MPU_ADDR = 0x68; // I2C address of the MPU-6050. If AD0 pin is set to HIGH, the I2C address will be 0x69.
 
 int16_t acc_x, acc_y, acc_z;      // variables for accelerometer raw data
 int16_t gyro_x, gyro_y, gyro_z;   // variables for gyro raw data (optional - not needed for TinyLightCube)
@@ -52,7 +52,7 @@ void setup() {
   pixels.setBrightness(255);  // Set brightness of LEDs to 100%
   
   TinyWireM.begin();
-  TinyWireM.beginTransmission(MPU_ADDR);  // Begins a transmission to the I2C slave (GY-521 board)
+  TinyWireM.beginTransmission(MPU_ADDR);  // Begins a transmission to the I2C slave (MPU-6050)
   TinyWireM.send(0x6B);                   // PWR_MGMT_1 register
   TinyWireM.send(0);                      // set to zero (wakes up the MPU-6050)
   TinyWireM.endTransmission(true);
@@ -62,7 +62,7 @@ void loop() {
 
   TinyWireM.beginTransmission(MPU_ADDR);
   TinyWireM.send(0x3B);                   // starting with register 0x3B (ACCEL_XOUT_H) [MPU-6000 and MPU-6050 Register Map and Descriptions Revision 4.2, p.40]
-  TinyWireM.endTransmission(false);       // the parameter indicates that the Arduino will send a restart. As a result, the connection is kept active.
+  TinyWireM.endTransmission(false);       // the parameter indicates that the Attiny will send a restart. As a result, the connection is kept active.
   TinyWireM.requestFrom(MPU_ADDR, 7*2);   // request a total of 7*2=14 registers
   
   acc_x = TinyWireM.receive()<<8 | TinyWireM.receive(); // reading registers: 0x3B (ACCEL_XOUT_H) and 0x3C (ACCEL_XOUT_L)
